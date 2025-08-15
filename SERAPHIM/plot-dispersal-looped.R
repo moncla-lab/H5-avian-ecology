@@ -148,7 +148,7 @@ for (file_path in mcc_files)
   nberOfExtractionFiles = nberOfTreesToSample
   prob = 0.95; precision = 0.025
   startDatum = min(k[,"startYear"]) 
-  polygons = suppressWarnings(spreadGraphic2(localTreesDirectory, nberOfExtractionFiles, prob, startDatum, precision))
+#  polygons = suppressWarnings(spreadGraphic2(localTreesDirectory, nberOfExtractionFiles, prob, startDatum, precision))
   
   
   # Step 5 - defining a color scale
@@ -157,13 +157,13 @@ for (file_path in mcc_files)
   minYear = min(k[,"endYear"]); maxYear = max(k[,"endYear"])
   endYears_indices = (((k[,"endYear"]-minYear)/(maxYear-minYear))*100)+1
   endYears_colours = colour_scale[endYears_indices]
-  polygons_colours = rep(NA, length(polygons))
-  for (i in 1:length(polygons))
-  {
-    date = as.numeric(names(polygons[[i]]))
-    polygon_index = round((((date-minYear)/(maxYear-minYear))*100)+1)
-    polygons_colours[i] = paste0(colour_scale[polygon_index],"40")
-  }
+#  polygons_colours = rep(NA, length(polygons))
+#  for (i in 1:length(polygons))
+#  {
+#    date = as.numeric(names(polygons[[i]]))
+#    polygon_index = round((((date-minYear)/(maxYear-minYear))*100)+1)
+#    polygons_colours[i] = paste0(colour_scale[polygon_index],"40")
+#  }
   
   # Step 6 - plot HPD regions and MCC tree
   north_america <- ne_countries(continent = "north america", returnclass = "sf")
