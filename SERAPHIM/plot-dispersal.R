@@ -6,7 +6,8 @@ install.packages("diagram")
 
 # Set directory
 #setwd("/Users/claramal/Desktop/Moncla_Lab/H5_avian_ecology/SERAPHIM/2022tree_test/")
-setwd("/Users/claramal/Desktop/Moncla_Lab/H5_avian_ecology/SERAPHIM/nov2021-2024/")
+#setwd("/Users/claramal/Desktop/Moncla_Lab/H5_avian_ecology/SERAPHIM/nov2021-2024/")
+setwd("/Users/claramal/Desktop/Moncla_Lab/H5-avian-ecology/SERAPHIM/nov2021-2024_no-suliformes/")
 getwd()
 
 # Load packages
@@ -22,10 +23,11 @@ library(dplyr)
 
 # Step 1 - extract spatio-temporal information from posterior distribution of trees
 localTreesDirectory = "./Extracted_trees"
-nberOfTreesToSample = 100
-mostRecentSamplingDatum = 2024.929
+nberOfTreesToSample = 96
+mostRecentSamplingDatum = 2024.9262295081967
 #trees = readAnnotatedNexus("NAm_wild-ave_2022tree_ha_contphyl_100combined.trees")
-trees = readAnnotatedNexus("NAm_wild-aves_nov2021-2024_ha_contphyl_2025-07-10_combined_100.trees")
+#trees = readAnnotatedNexus("NAm_wild-aves_nov2021-2024_ha_contphyl_2025-07-10_combined_100.trees")
+trees = readAnnotatedNexus("NAm_wild-aves_nov2021-2024_no-suliformes_ha_contphyl_combined_2025-08-18_96trees.trees")
 dir.create(localTreesDirectory, showWarnings=F)
 for (i in 1:length(trees))
 {
@@ -35,10 +37,13 @@ for (i in 1:length(trees))
 
 # Step 2 - extract spatio-temporal information from MCC tree
 #mcc_tre = readAnnotatedNexus("NAm_wild-aves_2022tree_ha_contphyl_MCC_2025-02-05.tree")
-mcc_tre = readAnnotatedNexus("NAm_wild-aves_nov2021-2024_ha_contphyl_2025-07-10_MCC.tree")
+#mcc_tre = readAnnotatedNexus("NAm_wild-aves_nov2021-2024_ha_contphyl_2025-07-10_MCC.tree")
+mcc_tre = readAnnotatedNexus("NAm_wild-aves_nov2021-2024_no-suliformes_ha_contphyl_2025-08-18_MCC.tree")
 mcc_tab = mccTreeExtractions(mcc_tre, mostRecentSamplingDatum)
-write.csv(mcc_tab, "NAm_wild-aves_nov2021-2024_ha_MCC.csv", row.names=F, quote=F)
-mcc_tab = read.csv("NAm_wild-aves_nov2021-2024_ha_MCC.csv", head=T)
+#write.csv(mcc_tab, "NAm_wild-aves_nov2021-2024_ha_MCC.csv", row.names=F, quote=F)
+write.csv(mcc_tab, "NAm_wild-aves_nov2021-2024_no-suliformes_ha_MCC.csv", row.names=F, quote=F)
+#mcc_tab = read.csv("NAm_wild-aves_nov2021-2024_ha_MCC.csv", head=T)
+mcc_tab = read.csv("NAm_wild-aves_nov2021-2024_no-suliformes_ha_MCC.csv", head=T)
 
 # Step 3 - estimate HPD region for each time slice
 nberOfExtractionFiles = nberOfTreesToSample
@@ -65,16 +70,21 @@ for (i in 1:length(polygons))
 # Step 5 - plot HPD regions and MCC tree
 north_america <- ne_countries(continent = "north america", returnclass = "sf")
 north_america_vect <- vect(north_america)
-r_template <- rast(ext(north_america_vect), resolution = 0.3)
+r_template <- rast(ext(north_america_vect), resolution = 0.3) # To use the full raster, use this line of code
+#custom_ext <- ext(-171, -45, 7, 75) # if you want to make custom dimensions in the raster, use this code
+#r_template <- rast(custom_ext, resolution = 0.3) # This code implements any custome dimensions for your raster
 template_raster <- rasterize(north_america_vect, r_template, field = 1)
+
+countries = c("USA", "Canada", "Mexico") #, "Guatemala", "Belize", "Honduras", "El Salvador", "Costa Rica", "Panama"
 
 #borders = crop(gadm(country = "USA", level = 1, path = "/Users/claramal/Desktop/Moncla_Lab/H5_avian_ecology/SERAPHIM/2022tree_test/plot-dispersal/"), extent(r_rasterized))
 #borders = gadm(country = "USA", level = 1, path = "/Users/claramal/Desktop/Moncla_Lab/H5_avian_ecology/SERAPHIM/2022tree_test/plot-dispersal/")
-borders = gadm(country = "USA", level = 1, path = "/Users/claramal/Desktop/Moncla_Lab/H5_avian_ecology/SERAPHIM/nov2021-2024/")
+#borders = gadm(country = "USA", level = 1, path = "/Users/claramal/Desktop/Moncla_Lab/H5_avian_ecology/SERAPHIM/nov2021-2024/")
+borders = gadm(country = countries, level = 1, path = "/Users/claramal/Desktop/Moncla_Lab/H5-avian-ecology/SERAPHIM/nov2021-2024/")
 
-dev.new(width=6, height=6.3)
-par(mar=c(0,0,0,0), oma=c(1.2,3.5,1,0), mgp=c(0,0.4,0), lwd=0.2, bty="o")
-plot(template_raster, col="grey", box=F, axes=F, colNA="lightblue", legend=F)
+dev.new(width=6, height=6.3) # This line of code opens a new window for the figure
+par(mar=c(0,0,0,0), oma=c(1.2,3.5,1,0), mgp=c(0,0.4,0), lwd=0.2, bty="o") # This line of code sets up dimensions for the window?
+plot(template_raster, col="grey", box=F, axes=F, colNA="lightblue", legend=F) # This plots template_raster, removes the box and axes, and colors land grey and water blue
 
 for (i in 1:length(polygons))
 {

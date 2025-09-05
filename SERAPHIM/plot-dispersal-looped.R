@@ -1,6 +1,7 @@
 # Set directory
 #setwd("/Users/claramal/Desktop/Moncla_Lab/H5_avian_ecology/SERAPHIM/2022tree_test/")
-setwd("/Users/claramal/Desktop/Moncla_Lab/H5-avian-ecology/SERAPHIM/nov2021-2024/")
+#setwd("/Users/claramal/Desktop/Moncla_Lab/H5-avian-ecology/SERAPHIM/nov2021-2024/")
+setwd("/Users/claramal/Desktop/Moncla_Lab/H5-avian-ecology/SERAPHIM/nov2021-2024_no-suliformes/")
 getwd()
 
 # Load packages
@@ -16,66 +17,19 @@ library(dplyr)
 
 # Step 1 - set trees directory (this assumes that you have already extracted information for the posterior distribution)
 localTreesDirectory = "./Extracted_trees"
-nberOfTreesToSample = 100
-mostRecentSamplingDatum = 2024.929
+#nberOfTreesToSample = 100
+nberOfTreesToSample = 96
+#mostRecentSamplingDatum = 2024.929
+mostRecentSamplingDatum = 2024.9262295081967
 
 # Step 2 - extract spatio-temporal information from whole MCC tree
-mcc_tre = readAnnotatedNexus("NAm_wild-aves_nov2021-2024_ha_contphyl_2025-07-10_MCC.tree")
-mcc_tab = mccTreeExtractions(mcc_tre, mostRecentSamplingDatum)
-write.csv(mcc_tab, "./mcc_csvs/NAm_wild-aves_nov2021-2024_ha_MCC.csv", row.names=F, quote=F)
-mcc_tab = read.csv("./NAm_wild-aves_nov2021-2024_ha_MCC.csv", head=T)
+#mcc_tre = readAnnotatedNexus("NAm_wild-aves_nov2021-2024_ha_contphyl_2025-07-10_MCC.tree")
+#mcc_tab = mccTreeExtractions(mcc_tre, mostRecentSamplingDatum)
+#write.csv(mcc_tab, "./mcc_csvs/NAm_wild-aves_nov2021-2024_ha_MCC.csv", row.names=F, quote=F)
+#mcc_tab = read.csv("./NAm_wild-aves_nov2021-2024_ha_MCC.csv", head=T)
+mcc_tab = read.csv("./NAm_wild-aves_nov2021-2024_no-suliformes_ha_MCC.csv", head=T)
 
-# Step 3 - subset MCC tree
-#assign_month <- function(df, column) {
-  df <- df %>%
-    mutate(
-      rounded = round(.data[[column]], 6),
-      month = case_when(
-        rounded >= 2021.832877 ~ "november",
-        rounded >= 2021.915068 & rounded < 2022.000000 ~ "december",
-        rounded >= 2022.000000 & rounded < 2022.084932 ~ "january",
-        rounded >= 2022.084932 & rounded < 2022.161644 ~ "february",
-        rounded >= 2022.161644 & rounded < 2022.246575 ~ "march",
-        rounded >= 2022.246575 & rounded < 2022.328767 ~ "april",
-        rounded >= 2022.328767 & rounded < 2022.413699 ~ "may",
-        rounded >= 2022.413699 & rounded < 2022.495890 ~ "june",
-        rounded >= 2022.495890 & rounded < 2022.580822 ~ "july",
-        rounded >= 2022.580822 & rounded < 2022.665753 ~ "august",
-        rounded >= 2022.665753 & rounded < 2022.747945 ~ "september",
-        rounded >= 2022.747945 & rounded < 2022.832877 ~ "october",
-        rounded >= 2022.832877 & rounded < 2022.915068 ~ "november",
-        rounded >= 2022.915068 & rounded < 2023.000000 ~ "december",
-        rounded >= 2023.000000 & rounded < 2023.084932 ~ "january",
-        rounded >= 2023.084932 & rounded < 2023.161644 ~ "february",
-        rounded >= 2023.161644 & rounded < 2023.246575 ~ "march",
-        rounded >= 2023.246575 & rounded < 2023.328767 ~ "april",
-        rounded >= 2023.328767 & rounded < 2023.413699 ~ "may",
-        rounded >= 2023.413699 & rounded < 2023.495890 ~ "june",
-        rounded >= 2023.495890 & rounded < 2023.580822 ~ "july",
-        rounded >= 2023.580822 & rounded < 2023.665753 ~ "august",
-        rounded >= 2023.665753 & rounded < 2023.747945 ~ "september",
-        rounded >= 2023.747945 & rounded < 2023.832877 ~ "october",
-        rounded >= 2023.832877 & rounded < 2023.915068 ~ "november",
-        rounded >= 2023.915068 & rounded < 2024.000000 ~ "december",
-        rounded >= 2024.000000 & rounded < 2024.084699 ~ "january",
-        rounded >= 2024.084699 & rounded < 2024.163934 ~ "february",
-        rounded >= 2024.163934 & rounded < 2024.248634 ~ "march",
-        rounded >= 2024.248634 & rounded < 2024.330601 ~ "april",
-        rounded >= 2024.330601 & rounded < 2024.415301 ~ "may",
-        rounded >= 2024.415301 & rounded < 2024.497268 ~ "june",
-        rounded >= 2024.497268 & rounded < 2024.581967 ~ "july",
-        rounded >= 2024.581967 & rounded < 2024.666667 ~ "august",
-        rounded >= 2024.666667 & rounded < 2024.748634 ~ "september",
-        rounded >= 2024.748634 & rounded < 2024.833333 ~ "october",
-        rounded >= 2024.833333 & rounded < 2024.915301 ~ "november",
-        rounded >= 2024.915301 ~ "december",
-        TRUE ~ "unknown"
-      )
-    ) %>%
-    select(-rounded)  # remove the intermediate column, like drop("rounded") in Python
-  
-  return(df)
-}
+# Step 3 - option 1 - subset MCC tree by month
 
 mcc_2021_jan2022 <- mcc_tab %>%
   filter(endYear >= 2021.744036 & endYear < 2022.084932) # November 2021-January 2022
@@ -137,6 +91,51 @@ mcc_2024 <- mcc_tab %>%
   filter(endYear >= 2024.00542 & endYear <= 2024.929) # should be 764
 write.csv(mcc_2024, "./mcc_csvs/NAm_wild-aves_nov2021-2024_ha_MCC_2024.csv", row.names=F, quote=F)
 
+# Step 3 - option 2 - subset MCC by season
+
+mcc_fall21 <- mcc_tab %>%
+  filter(endYear >= 2021.752859 & endYear <= 2021.96986) # Autumn 2021
+write.csv(mcc_fall21, "./mcc_csvs/NAm_wild-aves_nov2021-2024_no-suliformes_ha_MCC_fall2021.csv", row.names = F, quote = F)
+
+mcc_winter21_22 <- mcc_tab %>%
+  filter(endYear > 2021.96986 & endYear <= 2022.21096) # Winter 2021-22
+write.csv(mcc_winter21_22, "./mcc_csvs/NAm_wild-aves_nov2021-2024_no-suliformes_ha_MCC_winter2021-22.csv", row.names = F, quote = F)
+
+mcc_spring22 <- mcc_tab %>%
+  filter(endYear > 2022.21096 & endYear <= 2022.46575) # Spring 2022
+write.csv(mcc_spring22, "./mcc_csvs/NAm_wild-aves_nov2021-2024_no-suliformes_ha_MCC_spring2022.csv", row.names = F, quote = F)
+
+mcc_summer22 <- mcc_tab %>%
+  filter(endYear > 2022.46575 & endYear <= 2022.72055) # Summer 2022
+write.csv(mcc_summer22, "./mcc_csvs/NAm_wild-aves_nov2021-2024_no-suliformes_ha_MCC_summer2022.csv", row.names = F, quote = F)
+
+mcc_fall22 <- mcc_tab %>%
+  filter(endYear > 2022.72055 & endYear <= 2022.96712) # Autumn 2022
+write.csv(mcc_fall22, "./mcc_csvs/NAm_wild-aves_nov2021-2024_no-suliformes_ha_MCC_fall2022.csv", row.names = F, quote = F)
+
+mcc_winter22_23 <- mcc_tab %>%
+  filter(endYear > 2022.96712 & endYear <= 2023.21096) # Winter 2022-23
+write.csv(mcc_winter22_23, "./mcc_csvs/NAm_wild-aves_nov2021-2024_no-suliformes_ha_MCC_winter2022-23.csv", row.names = F, quote = F)
+
+mcc_spring23 <- mcc_tab %>%
+  filter(endYear > 2023.21096 & endYear <= 2023.46575) # Spring 2023
+write.csv(mcc_spring23, "./mcc_csvs/NAm_wild-aves_nov2021-2024_no-suliformes_ha_MCC_spring2023.csv", row.names = F, quote = F)
+
+mcc_summer23 <- mcc_tab %>%
+  filter(endYear > 2023.46575 & endYear <= 2023.72329) # Summer 2023
+write.csv(mcc_summer23, "./mcc_csvs/NAm_wild-aves_nov2021-2024_no-suliformes_ha_MCC_summer2023.csv", row.names = F, quote = F)
+
+mcc_fall23 <- mcc_tab %>%
+  filter(endYear > 2023.72329 & endYear <= 2023.96712) # Autumn 2023
+write.csv(mcc_fall23, "./mcc_csvs/NAm_wild-aves_nov2021-2024_no-suliformes_ha_MCC_fall2023.csv", row.names = F, quote = F)
+
+mcc_winter23_24 <- mcc_tab %>%
+  filter(endYear > 2023.96712 & endYear <= 2024.21038) # Winter 2023-24
+write.csv(mcc_winter23_24, "./mcc_csvs/NAm_wild-aves_nov2021-2024_no-suliformes_ha_MCC_winter2023-24.csv", row.names = F, quote = F)
+
+mcc_spring_summer_autumn_winter_24 <- mcc_tab %>%
+  filter(endYear > 2024.21038) # Rest of 2024
+write.csv(mcc_spring_summer_autumn_winter_24, "./mcc_csvs/NAm_wild-aves_nov2021-2024_no-suliformes_ha_MCC_spring-summer-autumn2024.csv", row.names = F, quote = F)
 
 # Plot each CSV in the folder and save each plot as a png to the output_plots directory (Chat GPT helped a lot with this)
 mcc_files <- list.files("./mcc_csvs", pattern = "\\.csv$", full.names = TRUE)
@@ -168,10 +167,13 @@ for (file_path in mcc_files)
   # Step 6 - plot HPD regions and MCC tree
   north_america <- ne_countries(continent = "north america", returnclass = "sf")
   north_america_vect <- vect(north_america)
-  r_template <- rast(ext(north_america_vect), resolution = 0.3)
+  #r_template <- rast(ext(north_america_vect), resolution = 0.3) # To use the full raster, use this line of code
+  custom_ext <- ext(-171, -45, 7, 75) # if you want to make custom dimensions in the raster, use this code
+  r_template <- rast(custom_ext, resolution = 0.3) # This code implements any custome dimensions for your raster
   template_raster <- rasterize(north_america_vect, r_template, field = 1)
   
-  borders = gadm(country = "USA", level = 1, path = "/Users/claramal/Desktop/Moncla_Lab/H5-avian-ecology/SERAPHIM/nov2021-2024/")
+  countries = c("USA", "Canada", "Mexico")  #"Guatemala", "Belize", "Honduras", "El Salvador", "Costa Rica", "Panama"
+  borders = gadm(country = countries, level = 1, path = "/Users/claramal/Desktop/Moncla_Lab/H5-avian-ecology/SERAPHIM/nov2021-2024_no-suliformes/")
   
   # Define output PNG filename
   output_file <- paste0("plot_", tools::file_path_sans_ext(basename(file_path)), ".pdf")
@@ -179,16 +181,16 @@ for (file_path in mcc_files)
   par(mar=c(0,0,0,0), oma=c(1.2,3.5,1,0), mgp=c(0,0.4,0), lwd=0.2, bty="o")
   plot(template_raster, col="grey", box=F, axes=F, colNA="lightblue", legend=F)
   
-  for (i in 1:length(polygons))
-  {
-    plot(polygons[[i]], axes=F, col=polygons_colours[i], add=T, border=NA)
-  }
+#  for (i in 1:length(polygons))
+#  {
+#    plot(polygons[[i]], axes=F, col=polygons_colours[i], add=T, border=NA)
+#  }
   plot(borders, add=T, lwd=0.1, border="gray10")
   
   for (i in 1:dim(k)[1])
   {
     curvedarrow(cbind(k[i,"startLon"],k[i,"startLat"]), cbind(k[i,"endLon"],k[i,"endLat"]), arr.length=0,
-                arr.width=0, lwd=0.2, lty=1, lcol="gray10", arr.col=NA, arr.pos=FALSE, curve=0.1, dr=NA, endhead=F)
+                arr.width=0, lwd=0.2, lty=1, lcol="gray32", arr.col=NA, arr.pos=FALSE, curve=0.1, dr=NA, endhead=F)
   }
   # This loop plots the points, with size 0.15
   # According to CHAT GPT: color is based on endLon/endLat, not startLon/startLat, except for a one-time marker at the first iteration
@@ -200,10 +202,10 @@ for (file_path in mcc_files)
 #      points(k[i,"startLon"], k[i,"startLat"], pch=1, col="gray10", cex=0.3)
 #    }
 #    points(k[i,"startLon"], k[i,"startLat"], pch=16, col="gray10", cex=0.13) # The "if" loop above colors the first starting point, but this ensure no starting points are colored
-    points(k[i,"startLon"], k[i,"startLat"], pch=16, col=endYears_colours[i], cex=0.15) # Louise wanted the starting points colored too, so this line and the one below do that
-    points(k[i,"startLon"], k[i,"startLat"], pch=1, col="gray10", cex=0.15)
-    points(k[i,"endLon"], k[i,"endLat"], pch=16, col=endYears_colours[i], cex=0.15) # These next two lines color the ending points
-    points(k[i,"endLon"], k[i,"endLat"], pch=1, col="gray10", cex=0.15)
+    points(k[i,"startLon"], k[i,"startLat"], pch=16, col=endYears_colours[i], cex=0.3) # Louise wanted the starting points colored too, so this line and the one below do that
+    points(k[i,"startLon"], k[i,"startLat"], pch=1, col="gray10", cex=0.3)
+    points(k[i,"endLon"], k[i,"endLat"], pch=16, col=endYears_colours[i], cex=0.3) # These next two lines color the ending points
+    points(k[i,"endLon"], k[i,"endLat"], pch=1, col="gray10", cex=0.3)
   }
   
   rect(xmin(template_raster), ymin(template_raster), xmax(template_raster), ymax(template_raster), xpd=T, lwd=0.2)
