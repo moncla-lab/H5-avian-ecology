@@ -1,0 +1,9 @@
+,month_year,state,startState_counts,endState_counts,total_counts,latitude,longitude
+0,2023_july,britishcolumbia,3,5,8.0,54.917,-125.9527
+1,2023_july,california,1,,,37.1992,-119.4505
+2,2023_july,idaho,,1,,44.3538,-114.6086
+3,2023_july,missouri,,1,,38.3568,-92.4571
+4,2023_july,nebraska,14,13,27.0,41.5392,-99.7968
+5,2023_july,southdakota,3,1,4.0,44.4446,-100.2282
+6,2023_july,washington,10,10,20.0,47.3822,-120.4505
+7,2023_july,wyoming,3,4,7.0,42.9959,-107.5527

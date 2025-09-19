@@ -1,0 +1,11 @@
+,month_year,state,startState_counts,endState_counts,total_counts,latitude,longitude
+0,2021_november,illinois,4,6,10.0,40.0411,-89.1965
+1,2021_november,indiana,4,2,6.0,39.8938,-86.2818
+2,2021_november,iowa,3,4,7.0,42.0753,-93.4959
+3,2021_november,kentucky,3,1,4.0,37.536,-85.3021
+4,2021_november,maryland,,1,,39.055,-76.7909
+5,2021_november,newfoundland,,1,,48.36,-56.2
+6,2021_november,northcarolina,4,4,8.0,35.5579,-79.3856
+7,2021_november,tennessee,1,1,2.0,35.8605,-86.3504
+8,2021_november,virginia,4,6,10.0,37.5229,-78.8531
+9,2021_november,westvirginia,5,3,8.0,38.6409,-80.623
