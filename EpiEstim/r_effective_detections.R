@@ -129,7 +129,7 @@ duck_config <- make_config(list(t_start = t_start_duck,
                                 min_mean_si = 1, max_mean_si = 7,
                                 std_si = 3, std_std_si = 1, 
                                 min_std_si = 1, max_std_si = 5))
-anseriformes_R <- estimate_R(duck_detect, method = "uncertain_si", config = config)
+anseriformes_R <- estimate_R(duck_detect, method = "uncertain_si", config = duck_config)
 
 # Gulls
 gull_config <- make_config(list(t_start = t_start_gull,
@@ -138,16 +138,16 @@ gull_config <- make_config(list(t_start = t_start_gull,
                                 min_mean_si = 1, max_mean_si = 5,
                                 std_si = 3, std_std_si = 1, 
                                 min_std_si = 1, max_std_si = 5))
-shorebird_R <- estimate_R(gull_detect, method = "uncertain_si", config = config)
+shorebird_R <- estimate_R(gull_detect, method = "uncertain_si", config = gull_config)
 
 # Raptors
 rapt_config <- make_config(list(t_start = t_start_rapt,
                                 t_end = t_end_rapt,
                                 mean_si = 2, std_mean_si = 1, 
-                                min_mean_si = 0, max_mean_si = 4,
+                                min_mean_si = 1, max_mean_si = 3,
                                 std_si = 3, std_std_si = 1, 
                                 min_std_si = 1, max_std_si = 5))
-raptors_R <- estimate_R(rapt_detect, method = "uncertain_si", config = config)
+raptors_R <- estimate_R(rapt_detect, method = "uncertain_si", config = rapt_config)
 
 ## Step 6 - Plot R effective by hand (optional)
 
@@ -166,6 +166,14 @@ month_vector_37 <- c("December 2021",
   "July 2024", "August 2024", "September 2024", "October 2024", "November 2024", "December 2024"
 )
 
+month_vector_36 <- c(#"December 2021",
+  "January 2022", "February 2022", "March 2022", "April 2022", "May 2022", "June 2022",
+  "July 2022", "August 2022", "September 2022", "October 2022", "November 2022", "December 2022",
+  "January 2023", "February 2023", "March 2023", "April 2023", "May 2023", "June 2023",
+  "July 2023", "August 2023", "September 2023", "October 2023", "November 2023", "December 2023",
+  "January 2024", "February 2024", "March 2024", "April 2024", "May 2024", "June 2024",
+  "July 2024", "August 2024", "September 2024", "October 2024", "November 2024", "December 2024")
+
 month_vector_35 <- c(#"December 2021",
                   "January 2022", "February 2022", "March 2022", "April 2022", "May 2022", "June 2022",
                   "July 2022", "August 2022", "September 2022", "October 2022", "November 2022", "December 2022",
@@ -182,26 +190,26 @@ h5_detect_allplots$R$month <- as.Date(paste0("01 ", h5_detect_allplots$R$month),
 anseriformes_R$R$month <- month_vector_35
 anseriformes_R$R$month <- as.Date(paste0("01 ", anseriformes_R$R$month), format = "%d %B %Y")
 
-shorebird_R$R$month <- month_vector_35
+shorebird_R$R$month <- month_vector_37
 shorebird_R$R$month <- as.Date(paste0("01 ", shorebird_R$R$month), format = "%d %B %Y")
 
-raptors_R$R$month <- month_vector_35
+raptors_R$R$month <- month_vector_36
 raptors_R$R$month <- as.Date(paste0("01 ", raptors_R$R$month), format = "%d %B %Y")
 
 
 # Plot
 R_smoothed <- ggplot() + 
-  geom_line(data = h5_detect_allplots$R, aes(x = month, y = `Median(R)`), color = "#2B57B3", linewidth = 1) + 
-  geom_line(data = anseriformes_R$R, aes(x = month, y = `Median(R)`), color = "#5E9B82", linewidth = 1) + 
-  geom_line(data = shorebird_R$R, aes(x = month, y = `Median(R)`), color = "#C593D1", linewidth = 1) + 
-  geom_line(data = raptors_R$R, aes(x = month, y = `Median(R)`), color = "#AA7722", linewidth = 1) +
+  geom_line(data = h5_detect_allplots$R, aes(x = month, y = `Median(R)`, color = "All"), linewidth = 1, alpha = 0.8) + 
+  geom_line(data = anseriformes_R$R, aes(x = month, y = `Median(R)`, color = "Anseriformes"), linewidth = 1, alpha = 0.8) + 
+  geom_line(data = shorebird_R$R, aes(x = month, y = `Median(R)`, color = "Shorebirds"), linewidth = 1, alpha = 0.8) + 
+  geom_line(data = raptors_R$R, aes(x = month, y = `Median(R)`, color = "Raptors"), linewidth = 1, alpha = 0.8) +
   
-  geom_ribbon(data = h5_detect_allplots$R, aes(x = month, ymin = `Quantile.0.05(R)`, ymax = `Quantile.0.95(R)`), fill = "#2B57B3", alpha = 0.3) + 
-  geom_ribbon(data = anseriformes_R$R, aes(x = month,ymin = `Quantile.0.05(R)`, ymax = `Quantile.0.95(R)`), fill = "#5E9B82", alpha = 0.3) + 
-  geom_ribbon(data = shorebird_R$R, aes(x = month,ymin = `Quantile.0.05(R)`, ymax = `Quantile.0.95(R)`), fill = "#C593D1", alpha = 0.3) + 
-  geom_ribbon(data = raptors_R$R, aes(x = month,ymin = `Quantile.0.05(R)`, ymax = `Quantile.0.95(R)`), fill = "#AA7722", alpha = 0.3) + 
+  geom_ribbon(data = h5_detect_allplots$R, aes(x = month, ymin = `Quantile.0.05(R)`, ymax = `Quantile.0.95(R)`), fill = "#2B57B3", alpha = 0.2) + 
+  geom_ribbon(data = anseriformes_R$R, aes(x = month,ymin = `Quantile.0.05(R)`, ymax = `Quantile.0.95(R)`), fill = "#5E9B82", alpha = 0.2) + 
+  geom_ribbon(data = shorebird_R$R, aes(x = month,ymin = `Quantile.0.05(R)`, ymax = `Quantile.0.95(R)`), fill = "#C593D1", alpha = 0.2) + 
+  geom_ribbon(data = raptors_R$R, aes(x = month,ymin = `Quantile.0.05(R)`, ymax = `Quantile.0.95(R)`), fill = "#AA7722", alpha = 0.2) + 
   
-  scale_color_manual(name='Wild Birds', breaks=c('All', 'Anseriformes', 'Shorebirds', 'Raptors'), values=c('All' = "#2B57B3", 'Anseriformes' = "#5E9B82", 'Shorebirds' = "#C593D1", 'Raptors' = "#AA7722")) +  
+  scale_color_manual(name='Wild Birds', values = c('All' = "#2B57B3", 'Anseriformes' = "#5E9B82", 'Shorebirds' = "#C593D1", 'Raptors' = "#AA7722")) +  
   
   scale_x_date(date_labels = "%b %Y", date_breaks = "1 month") + 
   geom_vline(xintercept = as.Date(c("2022-03-20", "2022-06-20", "2022-09-20", "2022-12-20",

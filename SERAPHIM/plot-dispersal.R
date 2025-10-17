@@ -7,7 +7,8 @@ install.packages("diagram")
 # Set directory
 #setwd("/Users/claramal/Desktop/Moncla_Lab/H5_avian_ecology/SERAPHIM/2022tree_test/")
 #setwd("/Users/claramal/Desktop/Moncla_Lab/H5_avian_ecology/SERAPHIM/nov2021-2024/")
-setwd("/Users/claramal/Desktop/Moncla_Lab/H5-avian-ecology/SERAPHIM/nov2021-2024_no-suliformes/")
+#setwd("/Users/claramal/Desktop/Moncla_Lab/H5-avian-ecology/SERAPHIM/nov2021-2024_no-suliformes/")
+setwd("/Users/claramal/Desktop/Moncla_Lab/H5-avian-ecology/SERAPHIM/nov2021-2024_no-suliformes_contphyl-orderDTA/")
 getwd()
 
 # Load packages
@@ -38,12 +39,16 @@ for (i in 1:length(trees))
 # Step 2 - extract spatio-temporal information from MCC tree
 #mcc_tre = readAnnotatedNexus("NAm_wild-aves_2022tree_ha_contphyl_MCC_2025-02-05.tree")
 #mcc_tre = readAnnotatedNexus("NAm_wild-aves_nov2021-2024_ha_contphyl_2025-07-10_MCC.tree")
-mcc_tre = readAnnotatedNexus("NAm_wild-aves_nov2021-2024_no-suliformes_ha_contphyl_2025-08-18_MCC.tree")
+#mcc_tre = readAnnotatedNexus("NAm_wild-aves_nov2021-2024_no-suliformes_ha_contphyl_2025-08-18_MCC.tree")
+mcc_tre = readAnnotatedNexus("NAm_wild-aves_nov2021-2024_contphyl_order-DTA_2025-09-24_MCC.tree")
 mcc_tab = mccTreeExtractions(mcc_tre, mostRecentSamplingDatum)
 #write.csv(mcc_tab, "NAm_wild-aves_nov2021-2024_ha_MCC.csv", row.names=F, quote=F)
-write.csv(mcc_tab, "NAm_wild-aves_nov2021-2024_no-suliformes_ha_MCC.csv", row.names=F, quote=F)
+#write.csv(mcc_tab, "NAm_wild-aves_nov2021-2024_no-suliformes_ha_MCC.csv", row.names=F, quote=F)
+write.csv(mcc_tab, "NAm_wild-aves_nov2021-2024_contphyl_order-DTA_MCC_seraph.csv", row.names=F, quote=F)
 #mcc_tab = read.csv("NAm_wild-aves_nov2021-2024_ha_MCC.csv", head=T)
-mcc_tab = read.csv("NAm_wild-aves_nov2021-2024_no-suliformes_ha_MCC.csv", head=T)
+#mcc_tab = read.csv("NAm_wild-aves_nov2021-2024_no-suliformes_ha_MCC.csv", head=T)
+mcc_tab = read.csv("NAm_wild-aves_nov2021-2024_contphyl_order-DTA_MCC_seraph.csv", head=T)
+
 
 # Step 3 - estimate HPD region for each time slice
 nberOfExtractionFiles = nberOfTreesToSample
