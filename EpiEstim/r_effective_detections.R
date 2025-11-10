@@ -204,10 +204,10 @@ R_smoothed <- ggplot() +
   geom_line(data = shorebird_R$R, aes(x = month, y = `Median(R)`, color = "Shorebirds"), linewidth = 1, alpha = 0.8) + 
   geom_line(data = raptors_R$R, aes(x = month, y = `Median(R)`, color = "Raptors"), linewidth = 1, alpha = 0.8) +
   
-  geom_ribbon(data = h5_detect_allplots$R, aes(x = month, ymin = `Quantile.0.05(R)`, ymax = `Quantile.0.95(R)`), fill = "#2B57B3", alpha = 0.2) + 
-  geom_ribbon(data = anseriformes_R$R, aes(x = month,ymin = `Quantile.0.05(R)`, ymax = `Quantile.0.95(R)`), fill = "#5E9B82", alpha = 0.2) + 
-  geom_ribbon(data = shorebird_R$R, aes(x = month,ymin = `Quantile.0.05(R)`, ymax = `Quantile.0.95(R)`), fill = "#C593D1", alpha = 0.2) + 
-  geom_ribbon(data = raptors_R$R, aes(x = month,ymin = `Quantile.0.05(R)`, ymax = `Quantile.0.95(R)`), fill = "#AA7722", alpha = 0.2) + 
+  #geom_ribbon(data = h5_detect_allplots$R, aes(x = month, ymin = `Quantile.0.05(R)`, ymax = `Quantile.0.95(R)`), fill = "#2B57B3", alpha = 0.2) + 
+  #geom_ribbon(data = anseriformes_R$R, aes(x = month,ymin = `Quantile.0.05(R)`, ymax = `Quantile.0.95(R)`), fill = "#5E9B82", alpha = 0.2) + 
+  #geom_ribbon(data = shorebird_R$R, aes(x = month,ymin = `Quantile.0.05(R)`, ymax = `Quantile.0.95(R)`), fill = "#C593D1", alpha = 0.2) + 
+  #geom_ribbon(data = raptors_R$R, aes(x = month,ymin = `Quantile.0.05(R)`, ymax = `Quantile.0.95(R)`), fill = "#AA7722", alpha = 0.2) + 
   
   scale_color_manual(name='Wild Birds', values = c('All' = "#2B57B3", 'Anseriformes' = "#5E9B82", 'Shorebirds' = "#C593D1", 'Raptors' = "#AA7722")) +  
   
@@ -216,6 +216,63 @@ R_smoothed <- ggplot() +
                             "2023-03-20", "2023-06-20", "2023-09-20", "2023-12-20",
                             "2024-03-20", "2024-06-20", "2024-09-20")),
              linetype = "dashed", color = "grey30", linewidth = 0.5) + 
+  
+  ylim(0, 4) +
+  
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 R_smoothed
+
+# People may want separate graphs with the same y-axis so...
+R_all_yadjust <- ggplot() + 
+  geom_line(data = h5_detect_allplots$R, aes(x = month, y = `Median(R)`, color = "All"), linewidth = 1, alpha = 0.8) + 
+  geom_ribbon(data = h5_detect_allplots$R, aes(x = month, ymin = `Quantile.0.05(R)`, ymax = `Quantile.0.95(R)`), fill = "#2B57B3", alpha = 0.2) + 
+  scale_color_manual(name='Wild Birds', values = c('All' = "#2B57B3", 'Anseriformes' = "#5E9B82", 'Shorebirds' = "#C593D1", 'Raptors' = "#AA7722")) +  
+  scale_x_date(date_labels = "%b %Y", date_breaks = "1 month") + 
+  geom_vline(xintercept = as.Date(c("2022-03-20", "2022-06-20", "2022-09-20", "2022-12-20",
+                                    "2023-03-20", "2023-06-20", "2023-09-20", "2023-12-20",
+                                    "2024-03-20", "2024-06-20", "2024-09-20")),
+             linetype = "dashed", color = "grey30", linewidth = 0.5) + 
+  ylim(0, 15) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+R_ans <- ggplot() + 
+  geom_line(data = anseriformes_R$R, aes(x = month, y = `Median(R)`, color = "Anseriformes"), linewidth = 1, alpha = 0.8) + 
+  geom_ribbon(data = anseriformes_R$R, aes(x = month,ymin = `Quantile.0.05(R)`, ymax = `Quantile.0.95(R)`), fill = "#5E9B82", alpha = 0.2) + 
+  scale_color_manual(name='Wild Birds', values = c('All' = "#2B57B3", 'Anseriformes' = "#5E9B82", 'Shorebirds' = "#C593D1", 'Raptors' = "#AA7722")) +  
+  scale_x_date(date_labels = "%b %Y", date_breaks = "1 month") + 
+  geom_vline(xintercept = as.Date(c("2022-03-20", "2022-06-20", "2022-09-20", "2022-12-20",
+                                    "2023-03-20", "2023-06-20", "2023-09-20", "2023-12-20",
+                                    "2024-03-20", "2024-06-20", "2024-09-20")),
+             linetype = "dashed", color = "grey30", linewidth = 0.5) + 
+  ylim(0, 15) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+R_gull <- ggplot() + 
+  geom_line(data = shorebird_R$R, aes(x = month, y = `Median(R)`, color = "Shorebirds"), linewidth = 1, alpha = 0.8) + 
+  geom_ribbon(data = shorebird_R$R, aes(x = month,ymin = `Quantile.0.05(R)`, ymax = `Quantile.0.95(R)`), fill = "#C593D1", alpha = 0.2) + 
+  scale_color_manual(name='Wild Birds', values = c('All' = "#2B57B3", 'Anseriformes' = "#5E9B82", 'Shorebirds' = "#C593D1", 'Raptors' = "#AA7722")) +  
+  scale_x_date(date_labels = "%b %Y", date_breaks = "1 month") + 
+  geom_vline(xintercept = as.Date(c("2022-03-20", "2022-06-20", "2022-09-20", "2022-12-20",
+                                    "2023-03-20", "2023-06-20", "2023-09-20", "2023-12-20",
+                                    "2024-03-20", "2024-06-20", "2024-09-20")),
+             linetype = "dashed", color = "grey30", linewidth = 0.5) + 
+  ylim(0, 15) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+R_rapt <- ggplot() + 
+  geom_line(data = raptors_R$R, aes(x = month, y = `Median(R)`, color = "Raptors"), linewidth = 1, alpha = 0.8) +
+  geom_ribbon(data = raptors_R$R, aes(x = month,ymin = `Quantile.0.05(R)`, ymax = `Quantile.0.95(R)`), fill = "#AA7722", alpha = 0.2) + 
+  scale_color_manual(name='Wild Birds', values = c('All' = "#2B57B3", 'Anseriformes' = "#5E9B82", 'Shorebirds' = "#C593D1", 'Raptors' = "#AA7722")) +  
+  scale_x_date(date_labels = "%b %Y", date_breaks = "1 month") + 
+  geom_vline(xintercept = as.Date(c("2022-03-20", "2022-06-20", "2022-09-20", "2022-12-20",
+                                    "2023-03-20", "2023-06-20", "2023-09-20", "2023-12-20",
+                                    "2024-03-20", "2024-06-20", "2024-09-20")),
+             linetype = "dashed", color = "grey30", linewidth = 0.5) + 
+  ylim(0, 15) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+R_all_yadjust
+R_ans
+R_gull
+R_rapt
