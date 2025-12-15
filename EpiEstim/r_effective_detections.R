@@ -125,19 +125,22 @@ R
 # Duckies
 duck_config <- make_config(list(t_start = t_start_duck,
                                 t_end = t_end_duck,
-                                mean_si = 4, std_mean_si = 2, 
+                                mean_si = 4, std_mean_si = 1, 
                                 min_mean_si = 1, max_mean_si = 7,
                                 std_si = 3, std_std_si = 1, 
                                 min_std_si = 1, max_std_si = 5))
+# Bordes et al. (2024): clinical signs at 3dpi in Pekin ducks, some signs at 5dpi in wigeons, death by 5dpi in Barnacle geese, recovery is after 12dpi if it occurs
+# Caliendo et al. (2022): mallards and tufted ducks have median virus in pharyngeal swabs 4-5 dpi and peak in virus in pharyngeal swabs 1-3 dpi
 anseriformes_R <- estimate_R(duck_detect, method = "uncertain_si", config = duck_config)
 
 # Gulls
 gull_config <- make_config(list(t_start = t_start_gull,
                                 t_end = t_end_gull,
-                                mean_si = 3, std_mean_si = 1, 
-                                min_mean_si = 1, max_mean_si = 5,
+                                mean_si = 4.5, std_mean_si = 1, 
+                                min_mean_si = 2, max_mean_si = 7,
                                 std_si = 3, std_std_si = 1, 
                                 min_std_si = 1, max_std_si = 5))
+# Ewing & Bouwhuis (2025): mean latent period is 2, mean infectious period is 5.5, so gulls show signs starting from day 2 and ending around day 7
 shorebird_R <- estimate_R(gull_detect, method = "uncertain_si", config = gull_config)
 
 # Raptors
@@ -196,32 +199,35 @@ shorebird_R$R$month <- as.Date(paste0("01 ", shorebird_R$R$month), format = "%d 
 raptors_R$R$month <- month_vector_36
 raptors_R$R$month <- as.Date(paste0("01 ", raptors_R$R$month), format = "%d %B %Y")
 
+## To make a joint dataset
+# First: add an identifier column
+h5_detect_allplots$R$identifier <- "All Wild"
+anseriformes_R$R$identifier <- "Anseriformes"
+shorebird_R$R$identifier <- "Shorebirds"
+raptors_R$R$identifier <- "Birds of Prey"
 
-# Plot
+# Second: concatenate
+everything_df <- rbind(h5_detect_allplots$R, anseriformes_R$R, shorebird_R$R, raptors_R$R)
+
+# Third: plot
 R_smoothed <- ggplot() + 
-  geom_line(data = h5_detect_allplots$R, aes(x = month, y = `Median(R)`, color = "All"), linewidth = 1, alpha = 0.8) + 
-  geom_line(data = anseriformes_R$R, aes(x = month, y = `Median(R)`, color = "Anseriformes"), linewidth = 1, alpha = 0.8) + 
-  geom_line(data = shorebird_R$R, aes(x = month, y = `Median(R)`, color = "Shorebirds"), linewidth = 1, alpha = 0.8) + 
-  geom_line(data = raptors_R$R, aes(x = month, y = `Median(R)`, color = "Raptors"), linewidth = 1, alpha = 0.8) +
-  
-  #geom_ribbon(data = h5_detect_allplots$R, aes(x = month, ymin = `Quantile.0.05(R)`, ymax = `Quantile.0.95(R)`), fill = "#2B57B3", alpha = 0.2) + 
-  #geom_ribbon(data = anseriformes_R$R, aes(x = month,ymin = `Quantile.0.05(R)`, ymax = `Quantile.0.95(R)`), fill = "#5E9B82", alpha = 0.2) + 
-  #geom_ribbon(data = shorebird_R$R, aes(x = month,ymin = `Quantile.0.05(R)`, ymax = `Quantile.0.95(R)`), fill = "#C593D1", alpha = 0.2) + 
-  #geom_ribbon(data = raptors_R$R, aes(x = month,ymin = `Quantile.0.05(R)`, ymax = `Quantile.0.95(R)`), fill = "#AA7722", alpha = 0.2) + 
-  
-  scale_color_manual(name='Wild Birds', values = c('All' = "#2B57B3", 'Anseriformes' = "#5E9B82", 'Shorebirds' = "#C593D1", 'Raptors' = "#AA7722")) +  
-  
-  scale_x_date(date_labels = "%b %Y", date_breaks = "1 month") + 
+  geom_line(data = everything_df, aes(x = `month`, y = `Median(R)`, color = `identifier`), linewidth = 0.5, alpha = 0.8) + 
+  geom_ribbon(data = everything_df, aes(x = `month`, ymin = `Quantile.0.05(R)`, ymax = `Quantile.0.95(R)`, fill = `identifier`), alpha = 0.2) + 
+  facet_wrap(~`identifier`) +
+  scale_color_manual(values = c('All Wild' = "#2B57B3", 'Anseriformes' = "#5E9B82", 'Shorebirds' = "#C593D1", 'Birds of Prey' = "#AA7722")) +
+  scale_fill_manual(values = c('All Wild' = "#2B57B3", 'Anseriformes' = "#5E9B82", 'Shorebirds' = "#C593D1", 'Birds of Prey' = "#AA7722")) +
+  scale_x_date(date_labels = "%b %Y", date_breaks = "1 month") +  
   geom_vline(xintercept = as.Date(c("2022-03-20", "2022-06-20", "2022-09-20", "2022-12-20",
-                            "2023-03-20", "2023-06-20", "2023-09-20", "2023-12-20",
-                            "2024-03-20", "2024-06-20", "2024-09-20")),
-             linetype = "dashed", color = "grey30", linewidth = 0.5) + 
-  
-  ylim(0, 4) +
-  
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+                                    "2023-03-20", "2023-06-20", "2023-09-20", "2023-12-20",
+                                    "2024-03-20", "2024-06-20", "2024-09-20")),
+             linetype = "dashed", color = "grey50", linewidth = 0.3) + 
+  geom_hline(yintercept = 1, linetype = "dashed", color = "grey50", linewidth = 0.3) +
+  labs(x = "Month", y = "Effective Reproduction Number") +
+  #ylim(0, 4) +
+  theme(axis.text.x = element_text(size = 6, angle = 45, hjust = 1))
 
 R_smoothed
+ggsave(file="../../EpiEstim/all_detect_Reff.pdf", width=15, height=10, dpi=500)
 
 # People may want separate graphs with the same y-axis so...
 R_all_yadjust <- ggplot() + 
@@ -233,6 +239,7 @@ R_all_yadjust <- ggplot() +
                                     "2023-03-20", "2023-06-20", "2023-09-20", "2023-12-20",
                                     "2024-03-20", "2024-06-20", "2024-09-20")),
              linetype = "dashed", color = "grey30", linewidth = 0.5) + 
+  geom_hline(yintercept = 1, linetype = "dashed", color = "grey30", linewidth = 0.5) +
   ylim(0, 15) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
@@ -245,6 +252,7 @@ R_ans <- ggplot() +
                                     "2023-03-20", "2023-06-20", "2023-09-20", "2023-12-20",
                                     "2024-03-20", "2024-06-20", "2024-09-20")),
              linetype = "dashed", color = "grey30", linewidth = 0.5) + 
+  geom_hline(yintercept = 1, linetype = "dashed", color = "grey30", linewidth = 0.5) +
   ylim(0, 15) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
@@ -257,6 +265,7 @@ R_gull <- ggplot() +
                                     "2023-03-20", "2023-06-20", "2023-09-20", "2023-12-20",
                                     "2024-03-20", "2024-06-20", "2024-09-20")),
              linetype = "dashed", color = "grey30", linewidth = 0.5) + 
+  geom_hline(yintercept = 1, linetype = "dashed", color = "grey30", linewidth = 0.5) +
   ylim(0, 15) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
@@ -269,6 +278,7 @@ R_rapt <- ggplot() +
                                     "2023-03-20", "2023-06-20", "2023-09-20", "2023-12-20",
                                     "2024-03-20", "2024-06-20", "2024-09-20")),
              linetype = "dashed", color = "grey30", linewidth = 0.5) + 
+  geom_hline(yintercept = 1, linetype = "dashed", color = "grey30", linewidth = 0.5) +
   ylim(0, 15) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
